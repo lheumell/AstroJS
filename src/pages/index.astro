@@ -1,0 +1,210 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import CallToAction from "../components/Atoms/CallToAction.astro";
+import Caroussel from "../components/Molecules/Caroussel.svelte";
+import Code from "../components/Molecules/Code.astro";
+import Flex from "../components/Templates/Flex.astro";
+import CardWBg from "../components/Atoms/CardWBg.astro";
+import StartSection from "../components/Molecules/StartSection.astro";
+
+import MyVueComponent from "../components/MyVueComponent.vue";
+
+const cards = [
+  {
+    href: "https://docs.astro.build/",
+    title: "Documentation",
+    body: "Learn how Astro works and explore the official API docs.",
+  },
+  {
+    href: "https://astro.build/integrations/",
+    title: "Integrations",
+    body: "Supercharge your project with new frameworks and libraries.",
+  },
+  {
+    href: "https://astro.build/themes/",
+    title: "Themes",
+    body: "Explore a galaxy of community-built starter themes.",
+  },
+  {
+    href: "https://astro.build/chat/",
+    title: "Community",
+    body: "Come say hi to our amazing Discord community. ❤️",
+  },
+];
+
+// const generateFirstContent = () => {
+//   return (
+//     <ul role="list" class="link-card-grid">
+//       {cards.map(({ href, title, body }) => (
+//         <Card href={href} title={title} body={body} />
+//       ))}
+//     </ul>
+//   );
+// };
+
+const rawHTMLString = "Hello <strong>World</strong>";
+
+const sections = [
+  {
+    href: ["https://docs.astro.build/"],
+    title: "Introducing: Astro Islands",
+    description:
+      "Astro Islands represent a leading paradigm shift for frontend web architecture. Astro extracts your UI into smaller, isolated components on the page. Unused JavaScript is replaced with lightweight HTML, guaranteeing faster loads and time-to-interactive (TTI).",
+    content: cards,
+    style: "background-color: #2c3e50; color: aliceblue;",
+  },
+  {
+    href: ["https://astro.build/integrations/"],
+    title: "Use the tools you already love.",
+    description:
+      "Bring your own component framework. Astro offers first-class support for front-end tools like React, Vue, Svelte, and Tailwind CSS. Avoid confusing configuration and get started in seconds: just type astro add.",
+  },
+  {
+    href: ["https://astro.build/themes/"],
+    title: "Deploy to anywhere, even the edge.",
+    description:
+      "Astro supports both static output (SSG) and live server output (SSR). No matter what you choose to build, Astro's flexible adapter system makes deployment setup and configuration a breeze.",
+  },
+  {
+    href: ["https://astro.build/chat/", "https://astro.build/chat/"],
+    title: "Explore Astro’s ecosystem.",
+    description:
+      "Get more out of Astro with an ecosystem of 100+ integrations & themes to explore. Community packages make it easy to add new features to your project to improve performance, SEO, analytics, accessibility and more.",
+  },
+];
+console.log("ok");
+
+type Image = {
+  title: string;
+  explanation: string;
+  media_type: "image" | "video";
+  /** Date published in YYYY-MM-DD format */
+  date: string;
+  /** Video URL or standard resolution image URL */
+  url: string;
+  /** High-res image URL (for media_type: 'image' only) */
+  hdurl?: string;
+  /** API version. Defaults to "v1" */
+  service_version: string;
+};
+
+const images: Image[] = await fetch(
+  `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=10`
+).then((res) => res.json());
+
+console.log(images);
+---
+
+<Layout title="Welcome to Astro.">
+  <h1 set:html={rawHTMLString} />
+  <section class="first">
+    <main>
+      <h1>Welcome to <span class="text-gradient">Astro</span></h1>
+      <p class="instructions">
+        To get started, open the directory <code>src/pages</code> in your project.<br
+        />
+        <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
+      </p>
+
+      <Flex>
+        <div>
+          <p>ASTRO 2.0 IS HERE</p>
+          <h1>Build faster websites.</h1>
+          <h3>
+            Pull content from anywhere and serve it fast with Astro's next-gen
+            island architecture.
+          </h3>
+          <Flex>
+            <CallToAction>Get Started</CallToAction>
+            <Code>npm create astro@latest</Code>
+          </Flex>
+        </div>
+        <CardWBg backgroundImage="url(../../src/assets/IMG/first-astro.jpg)">
+          AstroJS
+        </CardWBg>
+      </Flex>
+    </main>
+  </section>
+
+  <section class="second">
+    <main>
+      <Flex>TRUSTED BY OVER 30,000 DEVELOPERS AND WORLD-CLASS TEAMS</Flex>
+    </main>
+  </section>
+
+  {
+    sections.map(({ title, description, href, content, style }) => (
+      <section style={style}>
+        <main>
+          <StartSection title={title} description={description} href={href} />
+          <div>
+            {content?.map(({ href, title, body }) => (
+              <ul role="list" class="link-card-grid">
+                <Card href={href} title={title} body={body} />
+              </ul>
+            ))}
+          </div>
+        </main>
+      </section>
+    ))
+  }
+  <section>
+    <MyVueComponent client:visible />
+  </section>
+
+  <section>
+    <main>
+      <h1>Welcome to <span class="text-gradient">Star Gazers</span></h1>
+      <Caroussel client:idle {images} />
+    </main>
+  </section>
+</Layout>
+
+<style>
+  .second {
+    background-color: white;
+  }
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 1400px;
+  }
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    line-height: 1.6;
+    margin: 1rem 0;
+    border: 1px solid rgba(var(--accent), 25%);
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.4rem;
+  }
+  .instructions code {
+    font-size: 0.875em;
+    font-weight: bold;
+    background: rgba(var(--accent), 12%);
+    color: rgb(var(--accent));
+    border-radius: 4px;
+    padding: 0.3em 0.45em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent));
+  }
+  .link-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    gap: 1rem;
+    padding: 0;
+  }
+</style>

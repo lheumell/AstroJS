@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Images from "../components/Atoms/Image.svelte";
+import { Image } from "@astrojs/image/components";
+
+const { imageDate } = Astro.params;
+const image = await fetch(
+  `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=${imageDate}`
+).then((res) => res.json());
+---
+
+<Layout title={imageDate}>
+  <main>
+    <h1>{image.title}</h1>
+    <Images title={image.title} url={image.url} alt={image.explanation}>
+      <p slot="figcaption">
+        {image.explanation}
+      </p>
+    </Images>
+    <Image
+      src={image.url}
+      alt={image.explanation}
+      width={150}
+      height={150}
+      format={"jpeg"}
+    />
+  </main>
+</Layout>
+
+<style>
+  h1 {
+    margin: 2rem 0;
+  }
+
+  main {
+    margin: auto;
+    padding: 1em;
+    max-width: 60ch;
+  }
+</style>

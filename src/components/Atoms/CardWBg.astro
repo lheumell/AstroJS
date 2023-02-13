@@ -1,0 +1,28 @@
+---
+export interface Props {
+  backgroundImage: string;
+}
+
+const { backgroundImage } = Astro.props;
+console.log(backgroundImage);
+---
+
+<div class="card-bg">
+  <h1><slot /></h1>
+</div>
+
+<style define:vars={{ backgroundImage }}>
+  .card-bg {
+    color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    height: 300px;
+    border-radius: 20px;
+    /* opacity: 0.7; */
+    background-image: var(--backgroundImage);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+</style>
